@@ -1,0 +1,6 @@
+create package.json
+install typescript
+create tsconfig.json
+install eslint
+create app.ts
+create server.ts
