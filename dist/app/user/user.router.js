@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouters = void 0;
 const express_1 = __importDefault(require("express"));
-const app = (0, express_1.default)();
-app.use("", (req, res) => {
-    res.send("server is connceting");
-});
-exports.default = app;
+const user_controller_1 = require("./user.controller");
+const router = express_1.default.Router();
+router.post('/create-student', user_controller_1.userController.createStudent);
+exports.userRouters = router;

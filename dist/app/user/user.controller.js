@@ -8,24 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = require("mongoose");
-const app_1 = __importDefault(require("./app"));
-const port = 4000;
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield (0, mongoose_1.connect)("mongodb://127.0.0.1:27017/test");
-            app_1.default.listen(port, () => {
-                console.log(`the running port if : ${port}`);
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
-    });
-}
-main();
+exports.userController = void 0;
+const user_service_1 = require("./user.service");
+const createStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    const { password, studentInfo } = req.body;
+    const result = yield user_service_1.UserService.createStudentInToDB(password, studentInfo);
+    try {
+        res.json({
+            success: true,
+            messages: "successfully create a user",
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.userController = {
+    createStudent,
+};
