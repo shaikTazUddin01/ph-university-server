@@ -30,15 +30,14 @@ const createStudentInToDB = async (password: string, studentData: Student) => {
   const newUser = await User.create(userData);
 
   //create a student
-  if (Object.keys (newUser).length) {
+  if (Object.keys(newUser).length) {
     //set id , _id as user
-    studentData.id = newUser.id
-    studentData.user= newUser._id //reference_id
+    studentData.id = newUser.id;
+    studentData.user = newUser._id; //reference_id
 
-    const newStudent = await StudentModel.create(studentData)
+    const newStudent = await StudentModel.create(studentData);
     return newStudent;
-  } 
-
+  }
 };
 
 export const UserService = {
