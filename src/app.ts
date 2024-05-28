@@ -4,6 +4,7 @@ import cors from "cors";
 import { userRouters } from "./user/user.router";
 import globalErrorHandler from "./middlewares/globalErrorhandler";
 import notFound from "./middlewares/notFound";
+import router from "./routes";
 
 const app = express();
 app.use(express.json());
@@ -11,8 +12,8 @@ app.use(cors());
 
 //application routes
 
-app.use("/api/v1/students", StudentRoutes);
-app.use("/api/v1/users", userRouters);
+app.use("/api/v1", router);
+
 
 app.use("/", (req: Request, res: Response) => {
   res.send("server is connceting");
