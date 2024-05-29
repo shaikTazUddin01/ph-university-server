@@ -1,4 +1,4 @@
-import { Schema, model, connect, Types } from 'mongoose';
+import { Schema, model, connect, Types } from "mongoose";
 
 // 1. Create an interface representing a document in MongoDB.
 export type Guardian = {
@@ -24,15 +24,15 @@ export type LocalGuardian = {
 
 export type Student = {
   id: string;
-  user:Types.ObjectId
-  // password: string;
+  user: Types.ObjectId;
+  // password?: string;
   name: UserName;
-  gender: 'male' | 'female';
+  gender: "male" | "female";
   dateOfBirth?: string;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodgroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodgroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   presentAddress: string;
   permanentAddress: string;
   guardian: Guardian;

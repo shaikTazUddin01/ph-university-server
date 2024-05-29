@@ -4,7 +4,7 @@ import Student, {
   Guardian,
   LocalGuardian,
   UserName,
-} from './seudent.interface';
+} from './student.interface';
 import bcrypt from 'bcrypt';
 import config from '../config';
 
@@ -88,6 +88,7 @@ const studentSchema = new Schema<Student>(
     // password: {
     //   type: String,
     //   required: [true, 'password is required'],
+    //   optional:true
     // },
     name: {
       type: userNameSchema,
