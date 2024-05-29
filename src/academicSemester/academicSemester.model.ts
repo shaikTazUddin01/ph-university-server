@@ -19,7 +19,7 @@ const AcademicSemesterSchema = new Schema<TacademicSemester>({
     required: [true, "semester code name is required"],
   },
   year: {
-    type: Date,
+    type: String,
     required: [true, "started is required"],
   },
   startMonth: {
