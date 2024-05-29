@@ -15,12 +15,13 @@ app.use(cors());
 app.use("/api/v1", router);
 
 
-app.use("/", (req: Request, res: Response) => {
-  res.send("server is connceting");
-});
+// app.use("/", (req: Request, res: Response) => {
+//   res.send("server is connceting");
+// });
 
 app.use(globalErrorHandler);
 
 //not found route
 app.use(notFound);
+
 export default app;

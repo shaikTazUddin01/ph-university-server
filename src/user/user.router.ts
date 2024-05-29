@@ -1,8 +1,17 @@
-import express from 'express';
-import { userController } from './user.controller';
+import express, { NextFunction, Request, Response } from "express";
+import { userController } from "./user.controller";
+import { AnyZodObject } from "zod";
 
-const router= express.Router()
+import validateRequest from "../middlewares/validateRequest";
+import { studentValidations } from "../student/student.zod.validation";
 
-router.post('/create-student',userController.createStudent)
+const router = express.Router();
 
-export const userRouters = router
+
+router.post(
+  "/create-student",
+  validateRequest(studentValidations.createStudentZodValidation),
+  userController.createStudent
+);
+
+export const userRouters = router;

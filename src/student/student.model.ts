@@ -74,11 +74,11 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<Student>(
   {
-    id: {
-      type: String,
-      // unique: true ,
-      // message:"Id Must be unique",
-    },
+    // id: {
+    //   type: String,
+    //   // unique: true ,
+    //   // message:"Id Must be unique",
+    // },
     user:{
       type:Schema.Types.ObjectId,
       required: [true, "user id is required"],
@@ -152,10 +152,10 @@ const studentSchema = new Schema<Student>(
     //   },
     //   default: 'active',
     // },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+    // isDeleted: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   {
     toJSON: {
@@ -166,9 +166,9 @@ const studentSchema = new Schema<Student>(
 
 //virtual
 
-studentSchema.virtual('fullname').get(function () {
-  return `${this.name.firstName} ${this?.name?.middleName} ${this.name.lastName}`;
-});
+// studentSchema.virtual('fullname').get(function () {
+//   return `${this.name.firstName} ${this?.name?.middleName} ${this.name.lastName}`;
+// });
 
 //pre middleware
 // studentSchema.pre('save', async function (next) {
@@ -186,21 +186,21 @@ studentSchema.virtual('fullname').get(function () {
 // });
 
 //query middlewware
-studentSchema.pre('find', function (next) {
-  // console.log(this);
-  this.find({ isDeleted: { $ne: true } });
-  next();
-});
-studentSchema.pre('findOne', function (next) {
-  // console.log(this);
-  this.find({ isDeleted: { $ne: true } });
-  next();
-});
+// studentSchema.pre('find', function (next) {
+//   // console.log(this);
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
+// studentSchema.pre('findOne', function (next) {
+//   // console.log(this);
+//   this.find({ isDeleted: { $ne: true } });
+//   next();
+// });
 
-studentSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
+// studentSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+//   next();
+// });
 // Create model
 
 const StudentModel = model<Student>('Student', studentSchema);
