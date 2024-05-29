@@ -1,5 +1,5 @@
   
-type Month =
+export type Month =
 | 'January'
 | 'February'
 | 'March'
@@ -14,7 +14,7 @@ type Month =
 | 'December';
 
 
-export type AcademicSemester={
+export type TacademicSemester={
     name:'Autumn'|'Summar'|'fall'
     code:'01'|'02'|'3';
      year:Date;
