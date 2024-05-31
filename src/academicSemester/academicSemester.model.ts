@@ -31,7 +31,7 @@ const AcademicSemesterSchema = new Schema<TacademicSemester>({
     enum: AcademicSemesterMonths,
     required: [true, "end month name is required"],
   },
-});
+},{ timestamps: true });
 
 AcademicSemesterSchema.pre("save", async function (next) {
   const isExisSemester = await AcademicSemesterModel.findOne({

@@ -74,22 +74,17 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<Student>(
   {
-    // id: {
-    //   type: String,
-    //   // unique: true ,
-    //   // message:"Id Must be unique",
-    // },
+    id: {
+      type: String,
+      unique: true ,
+      // message:"Id Must be unique",
+    },
     user:{
       type:Schema.Types.ObjectId,
       required: [true, "user id is required"],
       unique:true,
       ref:'User'
     },
-    // password: {
-    //   type: String,
-    //   required: [true, 'password is required'],
-    //   optional:true
-    // },
     name: {
       type: userNameSchema,
       required: [true, "Student's name is required"],
@@ -145,18 +140,10 @@ const studentSchema = new Schema<Student>(
     profileImg: {
       type: String,
     },
-    // isActive: {
-    //   type: String,
-    //   enum: {
-    //     values: ['active', 'blocked'],
-    //     message: '{VALUE} is not supported',
-    //   },
-    //   default: 'active',
-    // },
-    // isDeleted: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref :'AcademicSemester'
+    },
   },
   {
     toJSON: {

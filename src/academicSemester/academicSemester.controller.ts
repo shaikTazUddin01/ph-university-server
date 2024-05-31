@@ -28,8 +28,10 @@ const findAcademicSemester = catchAsync(async (req, res) => {
   });
 });
 const findAcademicSemesterById = catchAsync(async (req, res) => {
-  const id=req.params.id
-  const result = await academicSemesterService.findAcademicSemesterFromDBById(id);
+  const id = req.params.id;
+  const result = await academicSemesterService.findAcademicSemesterFromDBById(
+    id
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -40,9 +42,12 @@ const findAcademicSemesterById = catchAsync(async (req, res) => {
 });
 
 const updateAcademicSemesterById = catchAsync(async (req, res) => {
-  const id=req.params.id
-  const updatedData=req.body
-  const result = await academicSemesterService.updateAcademicSemesterFromDBById(id,updatedData);
+  const id = req.params.id;
+  const updatedData = req.body;
+  const result = await academicSemesterService.updateAcademicSemesterFromDBById(
+    id,
+    updatedData
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -56,5 +61,5 @@ export const academicSemesterController = {
   createAcademicSemester,
   findAcademicSemester,
   findAcademicSemesterById,
-  updateAcademicSemesterById
+  updateAcademicSemesterById,
 };
