@@ -1,21 +1,20 @@
-import { Schema, model } from "mongoose";
-import {  TacademicSemester } from "./academicSemester.interface";
-import { AcademicSemesterCode, AcademicSemesterMonths, AcademicSemesterName } from "./academicSemester.const";
-
-
-
-
-
+import { Error, Schema, model } from "mongoose";
+import { TacademicSemester } from "./academicSemester.interface";
+import {
+  AcademicSemesterCode,
+  AcademicSemesterMonths,
+  AcademicSemesterName,
+} from "./academicSemester.constant";
 
 const AcademicSemesterSchema = new Schema<TacademicSemester>({
   name: {
     type: String,
-    enum:AcademicSemesterName,
+    enum: AcademicSemesterName,
     required: [true, "semester name is required"],
   },
   code: {
     type: String,
-    enum:AcademicSemesterCode,
+    enum: AcademicSemesterCode,
     required: [true, "semester code name is required"],
   },
   year: {
@@ -32,6 +31,17 @@ const AcademicSemesterSchema = new Schema<TacademicSemester>({
     enum: AcademicSemesterMonths,
     required: [true, "end month name is required"],
   },
+});
+
+AcademicSemesterSchema.pre("save", async function (next) {
+  const isExisSemester = await AcademicSemesterModel.findOne({
+    year: this.year,
+    name: this.name,
+  });
+  if (isExisSemester) {
+    throw new Error("Semester is alreary exists");
+  }
+  next();
 });
 
 export const AcademicSemesterModel = model<TacademicSemester>(
