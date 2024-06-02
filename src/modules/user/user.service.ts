@@ -1,7 +1,7 @@
 import { string } from "zod";
 import { TacademicSemester } from "../academicSemester/academicSemester.interface";
 import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
-import config from "../config";
+import config from "../../config";
 import Student from "../student/student.interface";
 import StudentModel from "../student/student.model";
 import { Tuser } from "./user.interface";
@@ -20,10 +20,10 @@ const createStudentInToDB = async (password: string, payload: Student) => {
 
   userData.role = "student";
 
- 
-
   //find academic semester info
-  const admissionSemester = await AcademicSemesterModel.findById(payload.admissionSemester)
+  const admissionSemester = await AcademicSemesterModel.findById(
+    payload.admissionSemester
+  );
 
   //manually generated it
   userData.id = await generateStudentId(admissionSemester);
@@ -31,7 +31,7 @@ const createStudentInToDB = async (password: string, payload: Student) => {
   //create a user
   const newUser = await User.create(userData);
 
-  console.log("user",newUser);
+  console.log("user", newUser);
   //create a student
   if (Object.keys(newUser).length) {
     payload.id = newUser.id;

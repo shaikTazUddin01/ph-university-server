@@ -4,7 +4,7 @@ import { StudentServices } from "./student.servce";
 // import { studentValidationSchema } from './student.vaildation';
 import { z } from "zod";
 // import studentZodValidation from "./student.zod.validation";
-import catchAsync from "../utils/cathcAsync";
+import catchAsync from "../../utils/cathcAsync";
 
 const getAllStudent = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDb();

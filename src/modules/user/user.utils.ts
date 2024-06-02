@@ -17,26 +17,29 @@ const findLastStudentId = async () => {
       createdAt: -1,
     })
     .lean();
-    // "2026 03 0002"
-    return lastStudent?.id ? lastStudent.id : undefined;
-    // return lastStudent?.id ? lastStudent.id.substring(6) : undefined;
-  };
+  // "2026 03 0002"
+  return lastStudent?.id ? lastStudent.id : undefined;
+  // return lastStudent?.id ? lastStudent.id.substring(6) : undefined;
+};
 
 export const generateStudentId = async (payload: TacademicSemester) => {
   //first time 0000
   let currentId = (0).toString();
+  // "2026 03 0002"
+  const lastStudentId = await findLastStudentId();
+  const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
+  const lastStudentYear = lastStudentId?.substring(0, 4);
+
+  const currrentSemesterCode = payload.code;
+  const currentYear = payload.year;
+
+  if (
+    lastStudentId &&
+    lastStudentSemesterCode === currrentSemesterCode &&
+    lastStudentYear === currentYear
+  ) {
     // "2026 03 0002"
-  const lastStudentId= await findLastStudentId();
-  const lastStudentSemesterCode=lastStudentId?.substring(4,6)
-  const lastStudentYear=lastStudentId?.substring(0,4);
-
-  const currrentSemesterCode = payload.code
-  const currentYear =payload.year;
-
-
-  if(lastStudentId && lastStudentSemesterCode === currrentSemesterCode && lastStudentYear === currentYear ){
-    // "2026 03 0002"
-   currentId =lastStudentId.substring(6)
+    currentId = lastStudentId.substring(6);
   }
   // const currentId = (await findLastStudentId()) || (0).toString();
 

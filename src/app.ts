@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
-import { StudentRoutes } from "./student/student.route";
+import { StudentRoutes } from "./modules/student/student.route";
 import cors from "cors";
-import { userRouters } from "./user/user.router";
+import { userRouters } from "./modules/user/user.router";
 import globalErrorHandler from "./middlewares/globalErrorhandler";
 import notFound from "./middlewares/notFound";
 import router from "./routes";
@@ -13,7 +13,6 @@ app.use(cors());
 //application routes
 
 app.use("/api/v1", router);
-
 
 // app.use("/", (req: Request, res: Response) => {
 //   res.send("server is connceting");

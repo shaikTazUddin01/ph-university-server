@@ -1,5 +1,5 @@
-import catchAsync from "../utils/cathcAsync";
-import sendResponse from "../utils/sendResponse";
+import catchAsync from "../../utils/cathcAsync";
+import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { academicSemesterService } from "./academicSemester.serviecs";
 

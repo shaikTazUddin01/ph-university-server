@@ -1,12 +1,12 @@
-import validator from 'validator';
-import { Schema, model, connect, Aggregate } from 'mongoose';
+import validator from "validator";
+import { Schema, model, connect, Aggregate } from "mongoose";
 import Student, {
   Guardian,
   LocalGuardian,
   UserName,
-} from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../config';
+} from "./student.interface";
+import bcrypt from "bcrypt";
+import config from "../../config";
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -18,10 +18,10 @@ const userNameSchema = new Schema<UserName>({
   },
   lastName: {
     type: String,
-    required: [true, 'Last name is required'],
+    required: [true, "Last name is required"],
     validate: {
       validator: (value: string) => validator.isAlpha(value),
-      message: '{VALUE} is not valid',
+      message: "{VALUE} is not valid",
     },
   },
 });
@@ -76,14 +76,14 @@ const studentSchema = new Schema<Student>(
   {
     id: {
       type: String,
-      unique: true ,
+      unique: true,
       // message:"Id Must be unique",
     },
-    user:{
-      type:Schema.Types.ObjectId,
+    user: {
+      type: Schema.Types.ObjectId,
       required: [true, "user id is required"],
-      unique:true,
-      ref:'User'
+      unique: true,
+      ref: "User",
     },
     name: {
       type: userNameSchema,
@@ -92,64 +92,64 @@ const studentSchema = new Schema<Student>(
     gender: {
       type: String,
       enum: {
-        values: ['male', 'female'],
-        message: '{VALUE} is not supported',
+        values: ["male", "female"],
+        message: "{VALUE} is not supported",
       },
-      required: [true, 'Gender is required'],
+      required: [true, "Gender is required"],
     },
     dateOfBirth: {
       type: String,
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       // unique: true,
     },
     contactNo: {
       type: String,
-      required: [true, 'Contact number is required'],
+      required: [true, "Contact number is required"],
     },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency contact number is required'],
+      required: [true, "Emergency contact number is required"],
     },
     bloodgroup: {
       type: String,
       enum: {
-        values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-        message: '{VALUE} is not supported',
+        values: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        message: "{VALUE} is not supported",
       },
-      required: [true, 'Blood group is required'],
+      required: [true, "Blood group is required"],
     },
     presentAddress: {
       type: String,
-      required: [true, 'Present address is required'],
+      required: [true, "Present address is required"],
     },
     permanentAddress: {
       type: String,
-      required: [true, 'Permanent address is required'],
+      required: [true, "Permanent address is required"],
     },
     guardian: {
       type: guardianSchema,
-      required: [true, 'Guardian details are required'],
+      required: [true, "Guardian details are required"],
     },
     localGuardian: {
       type: localGuardianSchema,
-      required: [true, 'Local guardian details are required'],
+      required: [true, "Local guardian details are required"],
     },
     profileImg: {
       type: String,
     },
     admissionSemester: {
       type: Schema.Types.ObjectId,
-      ref :'AcademicSemester'
+      ref: "AcademicSemester",
     },
   },
   {
     toJSON: {
       virtuals: true,
     },
-  },
+  }
 );
 
 //virtual
@@ -191,6 +191,6 @@ const studentSchema = new Schema<Student>(
 // });
 // Create model
 
-const StudentModel = model<Student>('Student', studentSchema);
+const StudentModel = model<Student>("Student", studentSchema);
 
 export default StudentModel;
