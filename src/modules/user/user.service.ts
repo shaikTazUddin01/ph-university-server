@@ -1,5 +1,3 @@
-import { string } from "zod";
-import { TacademicSemester } from "../academicSemester/academicSemester.interface";
 import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
 import config from "../../config";
 import Student from "../student/student.interface";
@@ -8,6 +6,10 @@ import { Tuser } from "./user.interface";
 // import { NewUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
+import mongoose from "mongoose";
+import { AppError } from "../../errors/AppErrors";
+import httpStatus from "http-status";
+import { TacademicSemester } from "../academicSemester/academicSemester.interface";
 
 const createStudentInToDB = async (password: string, payload: Student) => {
   //create a user object
@@ -25,20 +27,46 @@ const createStudentInToDB = async (password: string, payload: Student) => {
     payload.admissionSemester
   );
 
-  //manually generated it
-  userData.id = await generateStudentId(admissionSemester);
+  const session = await mongoose.startSession();
 
-  //create a user
-  const newUser = await User.create(userData);
+  try {
+    session.startTransaction();
+    //manually generated it
+    userData.id = await generateStudentId(
+      admissionSemester as TacademicSemester
+    );
 
-  console.log("user", newUser);
-  //create a student
-  if (Object.keys(newUser).length) {
-    payload.id = newUser.id;
-    payload.user = newUser._id; //reference_id
+    //create a user(transaction - 1 )
+    const newUser = await User.create([userData], { session });
 
-    const newStudent = await StudentModel.create(payload);
+    console.log("user", newUser);
+    //create a student
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "failed to create user");
+    }
+    payload.id = newUser[0].id;
+    payload.user = newUser[0]._id; //reference_id
+
+    //create a student (transaction- 2)
+
+    const newStudent = await StudentModel.create([payload], { session });
+
+    console.log("new student", newStudent);
+    if (!newStudent) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "failed to create new student"
+      );
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
     return newStudent;
+  } catch (error) {
+    console.log(error);
+    await session.abortTransaction();
+    await session.endSession();
   }
 };
 

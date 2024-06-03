@@ -12,16 +12,20 @@ const CreateAcademicDepartmentValidation = z.object({
 });
 const UpdateAcademicDepartmentValidation = z.object({
   body: z.object({
-    name: z.string({
-      required_error: "name is required",
-    }).optional(),
-    academicFaculty: z.string({
-      required_error: "academicFaculty is required",
-    }).optional(),
+    name: z
+      .string({
+        required_error: "name is required",
+      })
+      .optional(),
+    academicFaculty: z
+      .string({
+        required_error: "academicFaculty is required",
+      })
+      .optional(),
   }),
 });
 
 export const AcademicDepartmentValidation = {
   CreateAcademicDepartmentValidation,
-  UpdateAcademicDepartmentValidation
+  UpdateAcademicDepartmentValidation,
 };

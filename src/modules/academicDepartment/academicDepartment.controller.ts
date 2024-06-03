@@ -7,7 +7,7 @@ import httpStatus from "http-status";
 const createAcademicDepartment = catchAsync(
   async (req: Request, res: Response) => {
     const academicDepartment = req.body;
-    console.log(academicDepartment);
+    // console.log("acadept--=>>",academicDepartment);
     const result =
       await AcademicDepartmentServices.CreateAcademicDepartmentInToDB(
         academicDepartment
