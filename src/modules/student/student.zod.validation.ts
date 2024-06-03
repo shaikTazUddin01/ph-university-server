@@ -70,4 +70,75 @@ const createStudentZodValidation = z.object({
   }),
 });
 
-export const studentValidations = { createStudentZodValidation };
+
+const updateuserNameSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, "First name is required")
+    .max(20, "First name max length 20 characters")
+    .refine((val) => val.trim() === val, {
+      message: "First name should not have leading or trailing spaces",
+    })
+    .refine((val) => val.charAt(0).toUpperCase() + val.slice(1) === val, {
+      message: "First name should be capitalized",
+    }).optional(),
+  middleName: z.string().optional(),
+  lastName: z
+    .string()
+    .min(1, "Last name is required")
+    .refine((val) => validator.isAlpha(val), {
+      message: "Last name should contain only alphabetic characters",
+    }).optional(),
+});
+
+const updateguardianSchema = z.object({
+  fatherName: z.string().min(1, "Father's name is required").optional(),
+  fatherOccupation: z.string().min(1, "Father's occupation is required").optional(),
+  fatherContactNo: z.string().min(1, "Father's contact number is required").optional(),
+  motherName: z.string().min(1, "Mother's name is required").optional(),
+  motherOccupation: z.string().min(1, "Mother's occupation is required").optional(),
+  motherContactNo: z.string().min(1, "Mother's contact number is required").optional(),
+}).partial();
+
+const updatelocalGuardianSchema = z.object({
+  name: z.string().min(1, "Local guardian's name is required").optional(),
+  occupation: z.string().min(1, "Local guardian's occupation is required").optional(),
+  contactNo: z.string().min(1, "Local guardian's contact number is required").optional(),
+  address: z.string().min(1, "Local guardian's address is required").optional(),
+}).partial();
+
+const updateStudentZodValidation = z.object({
+  body: z.object({
+    studentInfo: z.object({
+      name: updateuserNameSchema.optional(),
+      gender: z.enum(["male", "female"], {
+        required_error: "Gender is required",
+        invalid_type_error: "Invalid gender",
+      }).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z
+        .string()
+        .email("Invalid email address")
+        .min(1, "Email is required")
+        .optional(),
+      contactNo: z.string().min(1, "Contact number is required").optional(),
+      emergencyContactNo: z
+        .string()
+        .min(1, "Emergency contact number is required")
+        .optional(),
+      bloodgroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
+        required_error: "Blood group is required",
+        invalid_type_error: "Invalid blood group",
+      }).optional(),
+      presentAddress: z.string().min(1, "Present address is required").optional(),
+      permanentAddress: z.string().min(1, "Permanent address is required").optional(),
+      guardian: updateguardianSchema.optional(),
+      localGuardian: updatelocalGuardianSchema.optional(),
+      profileImg: z.string().optional(),
+      admissionSemester: z.string().optional(),
+    }).partial(),
+  }),
+});
+
+
+export const studentValidations = { createStudentZodValidation ,updateStudentZodValidation };

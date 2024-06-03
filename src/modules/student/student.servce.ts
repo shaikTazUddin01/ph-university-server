@@ -1,5 +1,9 @@
+import mongoose from "mongoose";
 import Student from "./student.interface";
 import StudentModel from "./student.model";
+import { AppError } from "../../errors/AppErrors";
+import httpStatus from "http-status";
+import { User } from "../user/user.model";
 
 // const createStudentIntoDB = async (student: Student) => {
 //   const result = await StudentModel.create(student);
@@ -21,7 +25,7 @@ const getAllStudentsFromDb = async () => {
 };
 
 const getSingleStudentsFromDb = async (id: string) => {
-  const result = await StudentModel.findById(id)
+  const result = await StudentModel.findOne({ id })
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -35,9 +39,47 @@ const getSingleStudentsFromDb = async (id: string) => {
 };
 
 const deleteSutdentFromDb = async (id: string) => {
-  const result = await StudentModel.updateOne({ id }, { isDeleted: true });
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const deletedStudent = await StudentModel.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session }
+    );
 
-  return result;
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete student");
+    }
+
+    const deletedUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session }
+    );
+
+    if (!deletedUser) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete user");
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedStudent;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(error);
+  }
+};
+
+const updateStudentIntoDB = async (id: string, payload: Partial<Student>) => {
+  const reslt = await StudentModel.findOneAndUpdate({ id }, payload, {
+    new: true,
+  });
+
+  return reslt
 };
 
 export const StudentServices = {
@@ -45,4 +87,5 @@ export const StudentServices = {
   getAllStudentsFromDb,
   getSingleStudentsFromDb,
   deleteSutdentFromDb,
+  updateStudentIntoDB,
 };
