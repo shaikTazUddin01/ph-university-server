@@ -4,82 +4,87 @@ import StudentModel from "./student.model";
 import { AppError } from "../../errors/AppErrors";
 import httpStatus from "http-status";
 import { User } from "../user/user.model";
-
-// const createStudentIntoDB = async (student: Student) => {
-//   const result = await StudentModel.create(student);
-
-//   return result;
-// };
+import QueryBuilder from "../../builder/QueryBuilder";
+import { studentSearchableField } from "./student.const";
 
 const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
+
+
+  // const studentSearchableField = ["email", "name.middleName", "presentAddress"];
+
+//   let searchTerm = "";
+//   const queryObj = { ...query };
+//   if (query?.searchTerm) {
+//     searchTerm = query.searchTerm as string;
+//   }
+// //search query
+//   const searchQuery = StudentModel.find({
+//     $or: studentSearchableField.map((field) => ({
+//       [field]: { $regex: searchTerm, $options: "i" },
+//     })),
+//   });
+
+
+//   //filtering
+//   const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
+//   excludeFields.forEach((el) => delete queryObj[el]);
+//   // console.log({query,queryObj});
+//   console.log({ query }, { queryObj });
+
+//   const filterquery = searchQuery
+//     .find(queryObj)
+//     .populate("admissionSemester")
+//     .populate({
+//       path: "academicDepartment",
+//       populate: {
+//         path: "academicFaculty",
+//       },
+//     });
+
+  // let sort = "-createdAt";
   // console.log(query);
 
-  const studentSearchableField = ["email", "name.middleName", "presentAddress"];
+  // let page = 1;
+  // let limit = 1;
+  // let skip = 0;
 
-  let searchTerm = "";
-  const queryObj = { ...query };
-  if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
-  const searchQuery = StudentModel.find({
-    $or: studentSearchableField.map((field) => ({
-      [field]: { $regex: searchTerm, $options: "i" },
-    })),
-  });
-
-  //filtering
-  const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
-
-  excludeFields.forEach((el) => delete queryObj[el]);
-  // console.log({query,queryObj});
-  console.log({ query }, { queryObj });
-
-  const filterquery = searchQuery
-    .find(queryObj)
-    .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
-
-  let sort = "-createdAt";
-  // console.log(query);
-
-  let page = 1;
-  let limit = 1;
-  let skip = 0;
-
-  if (query.sort) {
-    sort = query.sort as string;
-  }
-  if (query.limit) {
-    limit = Number(query.limit);
-  }
+  // if (query.sort) {
+  //   sort = query.sort as string;
+  // }
+  // if (query.limit) {
+  //   limit = Number(query.limit);
+  // }
 
   // console.log(sort);
-  const sortQuery = filterquery.sort(sort);
+  // const sortQuery = filterquery.sort(sort);
 
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
+  // if (query.page) {
+  //   page = Number(query.page);
+  //   skip = (page - 1) * limit;
+  // }
 
-  const paginateQuery = sortQuery.skip(skip);
+  // const paginateQuery = sortQuery.skip(skip);
 
-  const limitQuery =  sortQuery.limit(limit);
+  // const limitQuery = sortQuery.limit(limit);
 
-  let fields = "__v";
+  // let fields = "__v";
 
-  if (query.fields) {
-    fields = (query.fields as string).split(",").join(" ");
-    console.log("fields: ", {fields});
-  }
- 
-  const fieldQuery =await limitQuery.select(fields)
-  return fieldQuery;
+  // if (query.fields) {
+  //   fields = (query.fields as string).split(",").join(" ");
+  //   console.log("fields: ", { fields });
+  // }
+
+  // const fieldQuery = await limitQuery.select(fields);
+  // return fieldQuery;
+
+  const studentQuery=new QueryBuilder(StudentModel.find(),query).search(studentSearchableField).filter().sort().paginate().fields()
+
+  const result = await studentQuery.modelQuery
+
+  return result
 };
+
+// single student
 
 const getSingleStudentsFromDb = async (id: string) => {
   const result = await StudentModel.findOne({ id })
