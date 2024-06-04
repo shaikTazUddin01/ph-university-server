@@ -11,8 +11,20 @@ import { User } from "../user/user.model";
 //   return result;
 // };
 
-const getAllStudentsFromDb = async () => {
-  const result = await StudentModel.find()
+const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
+  // console.log(query);
+  let searchTerm = "";
+
+  if (query?.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+// console.log(searchTerm);
+
+  const result = await StudentModel.find({
+    $or:['email','name.middleName','presentAddress'].map((field)=>({
+      [field]:{$regex:searchTerm , $options:'i'}
+    }))
+  })
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -99,9 +111,14 @@ const updateStudentIntoDB = async (id: string, payload: Partial<Student>) => {
   }
   console.log(modifiedUpdatedData);
 
-  const result = await StudentModel.findOneAndUpdate({ id }, modifiedUpdatedData, {
-    new: true, runValidators:true
-  });
+  const result = await StudentModel.findOneAndUpdate(
+    { id },
+    modifiedUpdatedData,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   return result;
 };

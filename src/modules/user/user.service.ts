@@ -39,7 +39,7 @@ const createStudentInToDB = async (password: string, payload: Student) => {
     //create a user(transaction - 1 )
     const newUser = await User.create([userData], { session });
 
-    console.log("user", newUser);
+    // console.log("user", newUser);
     //create a student
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "failed to create user");
@@ -51,7 +51,7 @@ const createStudentInToDB = async (password: string, payload: Student) => {
 
     const newStudent = await StudentModel.create([payload], { session });
 
-    console.log("new student", newStudent);
+    // console.log("new student", newStudent);
     if (!newStudent) {
       throw new AppError(
         httpStatus.BAD_REQUEST,

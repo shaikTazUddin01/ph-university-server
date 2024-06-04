@@ -7,8 +7,8 @@ import { z } from "zod";
 import catchAsync from "../../utils/cathcAsync";
 
 const getAllStudent = catchAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentsFromDb();
-
+  const result = await StudentServices.getAllStudentsFromDb(req?.query);
+// console.log(req.query);
   //sent response
   res.status(200).json({
     success: true,
