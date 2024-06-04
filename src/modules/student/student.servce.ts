@@ -21,7 +21,6 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   if (query?.searchTerm) {
     searchTerm = query.searchTerm as string;
   }
-  console.log(queryObj);
   const searchQuery = StudentModel.find({
     $or: studentSearchableField.map((field) => ({
       [field]: { $regex: searchTerm, $options: "i" },
@@ -29,10 +28,12 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   });
 
   //filtering
-  const excludeFields = ["searchTerm", "sort", "limit"];
+  const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
 
   excludeFields.forEach((el) => delete queryObj[el]);
   // console.log({query,queryObj});
+  console.log({ query }, { queryObj });
+
   const filterquery = searchQuery
     .find(queryObj)
     .populate("admissionSemester")
@@ -46,19 +47,38 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   let sort = "-createdAt";
   // console.log(query);
 
+  let page = 1;
+  let limit = 1;
+  let skip = 0;
+
   if (query.sort) {
     sort = query.sort as string;
   }
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
+
   // console.log(sort);
   const sortQuery = filterquery.sort(sort);
 
-  let limit = 1;
-  if (query.limit) {
-    limit = query.limit as number;
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
   }
 
-  const limitQuery = await sortQuery.limit(limit);
-  return limitQuery;
+  const paginateQuery = sortQuery.skip(skip);
+
+  const limitQuery =  sortQuery.limit(limit);
+
+  let fields = "__v";
+
+  if (query.fields) {
+    fields = (query.fields as string).split(",").join(" ");
+    console.log("fields: ", {fields});
+  }
+ 
+  const fieldQuery =await limitQuery.select(fields)
+  return fieldQuery;
 };
 
 const getSingleStudentsFromDb = async (id: string) => {
