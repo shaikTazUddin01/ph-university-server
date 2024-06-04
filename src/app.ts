@@ -1,10 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
-import { StudentRoutes } from "./modules/student/student.route";
+// import { StudentRoutes } from "./modules/student/student.route";
 import cors from "cors";
-import { userRouters } from "./modules/user/user.router";
+// import { userRouters } from "./modules/user/user.router";
 import globalErrorHandler from "./middlewares/globalErrorhandler";
 import notFound from "./middlewares/notFound";
 import router from "./routes";
+// import { promise } from "zod";
 
 const app = express();
 app.use(express.json());
@@ -14,9 +15,10 @@ app.use(cors());
 
 app.use("/api/v1", router);
 
-// app.use("/", (req: Request, res: Response) => {
-//   res.send("server is connceting");
-// });
+app.use("/", async(req: Request, res: Response) => {
+//   res.send("server is  connceting");
+// Promise.reject()
+});
 
 app.use(globalErrorHandler);
 

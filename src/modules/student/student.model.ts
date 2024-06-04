@@ -1,12 +1,12 @@
 import validator from "validator";
-import { Schema, model, connect, Aggregate } from "mongoose";
+import { Schema, model } from "mongoose";
 import Student, {
   Guardian,
   LocalGuardian,
   UserName,
 } from "./student.interface";
-import bcrypt from "bcrypt";
-import config from "../../config";
+// import bcrypt from "bcrypt";
+// import config from "../../config";
 
 const userNameSchema = new Schema<UserName>({
   firstName: {

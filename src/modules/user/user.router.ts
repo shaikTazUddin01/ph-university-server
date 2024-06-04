@@ -1,6 +1,6 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import { userController } from "./user.controller";
-import { AnyZodObject } from "zod";
+// import { AnyZodObject } from "zod";
 
 import validateRequest from "../../middlewares/validateRequest";
 import { studentValidations } from "../student/student.zod.validation";
