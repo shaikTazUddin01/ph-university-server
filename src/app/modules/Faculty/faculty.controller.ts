@@ -35,8 +35,38 @@ const findSingleFaculty=catchAsync(async(req,res)=>{
   })
 })
 
+
+const updateFaculty=catchAsync(async(req,res)=>{
+  console.log('update');
+  const{id}=req.params
+  const {facultyInFo}=req.body
+  const result= await facultyServices.updateFacultyInToDB(id,facultyInFo)
+
+  sendResponse(res,{
+    statusCode:httpStatus.OK,
+    success:true,
+    message:"Successfully update faculty data",
+    data:result
+  })
+})
+const deleteFaculty=catchAsync(async(req,res)=>{
+
+  const{id}=req.params
+
+  const result= await facultyServices.deleteFacultyIntoDB(id)
+
+  sendResponse(res,{
+    statusCode:httpStatus.OK,
+    success:true,
+    message:"Successfully delete this faculty",
+    data:"deleted"
+  })
+})
+
 export const facultyController = {
   // createFaculty,
   findAllFaculty,
-  findSingleFaculty
+  findSingleFaculty,
+  updateFaculty,
+  deleteFaculty
 };
