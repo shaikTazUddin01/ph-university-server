@@ -33,13 +33,13 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 
 //   const filterquery = searchQuery
 //     .find(queryObj)
-//     .populate("admissionSemester")
-//     .populate({
-//       path: "academicDepartment",
-//       populate: {
-//         path: "academicFaculty",
-//       },
-//     });
+    // .populate("admissionSemester")
+    // .populate({
+    //   path: "academicDepartment",
+    //   populate: {
+    //     path: "academicFaculty",
+    //   },
+    // });
 
   // let sort = "-createdAt";
   // console.log(query);
@@ -77,7 +77,15 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
   // const fieldQuery = await limitQuery.select(fields);
   // return fieldQuery;
 
-  const studentQuery=new QueryBuilder(StudentModel.find(),query).search(studentSearchableField).filter().sort().paginate().fields()
+  const studentQuery=new QueryBuilder(StudentModel.find()
+  .populate("admissionSemester")
+  .populate({
+    path: "academicDepartment",
+    populate: {
+      path: "academicFaculty",
+    },
+  })
+  ,query).search(studentSearchableField).filter().sort().paginate().fields()
 
   const result = await studentQuery.modelQuery
 
