@@ -4,8 +4,10 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/cathcAsync";
 
+
 const createStudent = catchAsync(async (req, res) => {
   const { password, studentInfo } = req.body;
+  console.log(password);
   const result = await UserService.createStudentInToDB(password, studentInfo);
 
   sendResponse(res, {
@@ -15,7 +17,19 @@ const createStudent = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const createFaculty = catchAsync(async (req, res) => {
+  const { password, facultyInfo } = req.body;
+  console.log(password);
+  const result = await UserService.createFacultyInToDB(password, facultyInfo);
 
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "faculty is creates successfully",
+    data: result,
+  });
+});
 export const userController = {
   createStudent,
+  createFaculty
 };

@@ -5,16 +5,19 @@ import StudentModel from "../student/student.model";
 import { Tuser } from "./user.interface";
 // import { NewUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateStudentId } from "./user.utils";
+import { generateStudentId, lastFacultyId } from "./user.utils";
 import mongoose from "mongoose";
 import { AppError } from "../../errors/AppErrors";
 import httpStatus from "http-status";
 import { TacademicSemester } from "../academicSemester/academicSemester.interface";
+import { TFaculty } from "../Faculty/faculty.interface";
+import Faculty from "../Faculty/faculty.model";
 
 const createStudentInToDB = async (password: string, payload: Student) => {
   //create a user object
   const userData: Partial<Tuser> = {};
 
+  // console.log(password);
   //if password is not given ,use deafult
   userData.password = password || (config.default_pass as string);
 
@@ -70,6 +73,26 @@ const createStudentInToDB = async (password: string, payload: Student) => {
   }
 };
 
+//createFaculty
+const createFacultyInToDB = async (password: string, payload: TFaculty) => {
+  const userData: Partial<Tuser> = {};
+
+  userData.password = password || config.default_pass;
+  userData.role = "faculty";
+
+  const newId = await lastFacultyId();
+
+  payload.id = newId;
+  userData.id = newId;
+
+  const newUser = await User.create(userData);
+
+  const newFaculty = await Faculty.create(payload);
+
+  return newFaculty;
+};
+
 export const UserService = {
   createStudentInToDB,
+  createFacultyInToDB,
 };
