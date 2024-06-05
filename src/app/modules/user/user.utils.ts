@@ -55,14 +55,13 @@ export const generateStudentId = async (payload: TacademicSemester) => {
   return incrementId;
 };
 
-// for faculties
 
-// find faculties id
+// find id for faculty and admin
 
-const faculty = async () => {
+const findId = async (role: string) => {
   const lastFacultyuserId = await User.findOne(
     {
-      role: "faculty",
+      role: role,
     },
     {
       id: 1,
@@ -77,22 +76,35 @@ const faculty = async () => {
 };
 
 export const lastFacultyId = async () => {
-  const facultyId = await faculty();
+  const facultyId = await findId("faculty");
 
   let currentId = (0).toString();
-  
+
   if (facultyId) {
-    
     currentId = facultyId.substring(2);
- 
   }
-  
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
 
   incrementId = `F-${incrementId}`;
 
   return incrementId;
-
 };
 
+//admin
+
+export const lastAdminId = async () => {
+  const AdminId = await findId("admin");
+
+  let currentId = (0).toString();
+
+  if (AdminId) {
+    currentId = AdminId.substring(2);
+  }
+
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, "0");
+
+  incrementId = `A-${incrementId}`;
+
+  return incrementId;
+};

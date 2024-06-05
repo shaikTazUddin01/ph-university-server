@@ -5,13 +5,15 @@ import StudentModel from "../student/student.model";
 import { Tuser } from "./user.interface";
 // import { NewUser } from "./user.interface";
 import { User } from "./user.model";
-import { generateStudentId, lastFacultyId } from "./user.utils";
+import { generateStudentId, lastAdminId, lastFacultyId } from "./user.utils";
 import mongoose from "mongoose";
 import { AppError } from "../../errors/AppErrors";
 import httpStatus from "http-status";
 import { TacademicSemester } from "../academicSemester/academicSemester.interface";
 import { TFaculty } from "../Faculty/faculty.interface";
 import Faculty from "../Faculty/faculty.model";
+import { TAdmin } from "../Admin/admin.interface";
+import Admin from "../Admin/admin.model";
 
 //create student
 const createStudentInToDB = async (password: string, payload: Student) => {
@@ -110,8 +112,30 @@ console.log(newUser);
   //   await session.endSession();
   // }
 };
+//create admin
+const createAdminInToDB = async (password: string, payload: TAdmin) => {
+  const userData: Partial<Tuser> = {};
+
+  userData.password = password || config.default_pass;
+  userData.role = "admin";
+
+    const newId = await lastAdminId();
+
+    // console.log('ID',newId);
+    payload.id = newId;
+    userData.id = newId;
+
+  
+    const newUser = await User.create(userData);
+
+    const newAdmin = await Admin.create(payload);
+
+    return newAdmin;
+
+};
 
 export const UserService = {
   createStudentInToDB,
   createFacultyInToDB,
+  createAdminInToDB
 };
