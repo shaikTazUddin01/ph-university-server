@@ -13,6 +13,7 @@ import { TacademicSemester } from "../academicSemester/academicSemester.interfac
 import { TFaculty } from "../Faculty/faculty.interface";
 import Faculty from "../Faculty/faculty.model";
 
+//create student
 const createStudentInToDB = async (password: string, payload: Student) => {
   //create a user object
   const userData: Partial<Tuser> = {};
@@ -73,23 +74,41 @@ const createStudentInToDB = async (password: string, payload: Student) => {
   }
 };
 
-//createFaculty
+//create Faculty
 const createFacultyInToDB = async (password: string, payload: TFaculty) => {
   const userData: Partial<Tuser> = {};
 
   userData.password = password || config.default_pass;
   userData.role = "faculty";
 
-  const newId = await lastFacultyId();
+  // const session = await mongoose.startSession();
 
-  payload.id = newId;
-  userData.id = newId;
+  // try {
+  //   session.startTransaction();
+    const newId = await lastFacultyId();
 
-  const newUser = await User.create(userData);
+    console.log('ID',newId);
+    payload.id = newId;
+    userData.id = newId;
 
-  const newFaculty = await Faculty.create(payload);
+  
+    const newUser = await User.create(userData
+      // , { session }
+    );
+console.log(newUser);
+    const newFaculty = await Faculty.create(payload
+      // , { session }
+    );
 
-  return newFaculty;
+    // await session.abortTransaction();
+    // await session.endSession();
+
+    return newFaculty;
+  // } catch (error) {
+  //   console.log(error);
+  //   await session.abortTransaction();
+  //   await session.endSession();
+  // }
 };
 
 export const UserService = {
