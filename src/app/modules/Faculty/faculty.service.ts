@@ -10,19 +10,19 @@ const findAllFacultyFromDB=async()=>{
 
 const findSingleFacultyFromDB=async(id : string)=>{
 
-  const result= await Faculty.findOne({id})
+  const result= await Faculty.findById(id)
   return result
 }
 const updateFacultyInToDB=async(id : string,payload :Partial<TFaculty>)=>{
 
-  const result= await Faculty.findOneAndUpdate({id},payload,{
+  const result= await Faculty.findByIdAndUpdate(id,payload,{
     new:true
   })
   return result
 }
 const deleteFacultyIntoDB=async(id : string)=>{
 
-  const result= await Faculty.findOneAndUpdate({id},{isDeleted:true},{
+  const result= await Faculty.findByIdAndUpdate(id,{isDeleted:true},{
     new:true
   })
   return result

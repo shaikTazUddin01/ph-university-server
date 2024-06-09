@@ -99,7 +99,7 @@ const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
 // single student
 
 const getSingleStudentsFromDb = async (id: string) => {
-  const result = await StudentModel.findOne({ id })
+  const result = await StudentModel.findById( id )
     .populate("admissionSemester")
     .populate({
       path: "academicDepartment",
@@ -116,8 +116,8 @@ const deleteSutdentFromDb = async (id: string) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const deletedStudent = await StudentModel.findOneAndUpdate(
-      { id },
+    const deletedStudent = await StudentModel.findByIdAndUpdate(
+      id ,
       { isDeleted: true },
       { new: true, session }
     );
@@ -173,8 +173,8 @@ const updateStudentIntoDB = async (id: string, payload: Partial<Student>) => {
   }
   console.log(modifiedUpdatedData);
 
-  const result = await StudentModel.findOneAndUpdate(
-    { id },
+  const result = await StudentModel.findByIdAndUpdate(
+     id ,
     modifiedUpdatedData,
     {
       new: true,

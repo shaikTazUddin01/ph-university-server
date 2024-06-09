@@ -17,7 +17,7 @@ const UPdateAcademicDepartmentFromDB = async (
   id: string,
   payload: TAcademicDepartment
 ) => {
-  const result = await AcademicDepartment.findOneAndUpdate({_id:id}, payload, {
+  const result = await AcademicDepartment.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return result;
