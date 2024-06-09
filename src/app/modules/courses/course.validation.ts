@@ -2,8 +2,7 @@ import { z } from "zod";
 
 
 const perRequisteCoursesvalidation=z.object({
-    courses:z.string(),
-    isDeleted:z.boolean()
+    courses:z.string()
 })
 
 
@@ -13,8 +12,7 @@ const courseValidation=z.object({
         prefix:z.string(),
         code:z.number(),
         credits:z.number(),
-        isDeleted:z.boolean(),
-        perRequisteCourses:z.array(perRequisteCoursesvalidation)
+        perRequisteCourses:z.array(perRequisteCoursesvalidation).optional()
     })
 })
 
