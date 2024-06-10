@@ -3,6 +3,7 @@ import { AppError } from "../../errors/AppErrors";
 import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import SemesterRegistration from "./semesterRegistration.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createSemesterRegistrationInToDB = async (
   payload: TSemesterRegistration
@@ -36,8 +37,18 @@ const createSemesterRegistrationInToDB = async (
   const result = await SemesterRegistration.create(payload);
   return result;
 };
-const findAllSemesterRegistrationFromDB = async () => {
-  const result = await SemesterRegistration.find();
+const findAllSemesterRegistrationFromDB = async (
+  query: Record<string, unknown>
+) => {
+  const semesterRegistrationQuery = new QueryBuilder(
+    SemesterRegistration.find().populate("academicSemester"),
+    query
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const result = await semesterRegistrationQuery.modelQuery
   return result;
 };
 
@@ -49,7 +60,7 @@ const updateSemesterRegistrationInToDB = async (
   id: string,
   payload: Partial<TSemesterRegistration>
 ) => {
-  const result = await SemesterRegistration.findByIdAndUpdate();
+  const result = await SemesterRegistration.findByIdAndUpdate(id,payload);
 
   return result;
 };
