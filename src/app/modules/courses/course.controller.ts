@@ -48,11 +48,11 @@ const DeleteCourse = catchAsync(async (req, res) => {
 });
 const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await CourseServices.updateCourseInToDB(id,req.body);
-// console.log(result);
-if (result == null) {
- throw new Error("course update failed")
-}
+  const result = await CourseServices.updateCourseInToDB(id, req.body);
+  // console.log(result);
+  if (result == null) {
+    throw new Error("course update failed");
+  }
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -61,10 +61,26 @@ if (result == null) {
   });
 });
 
+const assignFacultiesWithCourse = catchAsync(async (req, res) => {
+  const { courseId } = req.params;
+  const { faculties } = req.body;
+  const result = await CourseServices.assignFacultiesWithCourseIntoDB(
+    courseId,
+    faculties
+  );
+  //  console.log(faculties ,courseId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "course faculties update successfully",
+    data: result,
+  });
+});
 export const courseController = {
   createCourse,
   findCourse,
   findSingleCourse,
   DeleteCourse,
-  updateCourse
+  updateCourse,
+  assignFacultiesWithCourse,
 };
