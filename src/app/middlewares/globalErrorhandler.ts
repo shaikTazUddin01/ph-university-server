@@ -4,7 +4,8 @@ import { TErrorSources } from "../interface/error";
 import config from "../config";
 import { handleZodError } from "../errors/handleZodError";
 import handleValidationError from "../errors/handleValidationError";
-import { handleCastError } from "../errors/handleCastError";
+import handleCastError from "../errors/handleCastError";
+// import { handleCastError } from "../errors/handleCastError";
 // import app from "../app";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
