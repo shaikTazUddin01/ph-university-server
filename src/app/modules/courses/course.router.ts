@@ -20,4 +20,6 @@ router.patch(
 );
 router.put("/:courseId/assign-faculties", courseController.assignFacultiesWithCourse);
 
+router.delete("/:courseId/removed-faculties", courseController.removedFacultiesWithCourse);
+
 export const course = router;
