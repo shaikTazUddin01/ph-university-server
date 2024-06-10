@@ -11,7 +11,7 @@ router.post(
   academicSemesterController.createAcademicSemester
 );
 router.get(
-  "/academic-semester",
+  "/",
   academicSemesterController.findAcademicSemester
 );
 router.get(

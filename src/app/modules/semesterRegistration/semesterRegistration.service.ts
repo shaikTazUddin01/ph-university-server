@@ -1,54 +1,62 @@
-import httpStatus from "http-status"
-import { AppError } from "../../errors/AppErrors"
-import { AcademicSemesterModel } from "../academicSemester/academicSemester.model"
-import { TSemesterRegistration } from "./semesterRegistration.interface"
-import SemesterRegistration from "./semesterRegistration.model"
+import httpStatus from "http-status";
+import { AppError } from "../../errors/AppErrors";
+import { AcademicSemesterModel } from "../academicSemester/academicSemester.model";
+import { TSemesterRegistration } from "./semesterRegistration.interface";
+import SemesterRegistration from "./semesterRegistration.model";
 
+const createSemesterRegistrationInToDB = async (
+  payload: TSemesterRegistration
+) => {
+  const academicSemester = payload?.academicSemester;
 
+  //check if the semester exist
+  const isAcademicSemesterExsts = await AcademicSemesterModel.findById(
+    academicSemester
+  );
+  // console.log(isAcademicSemesterExsts);
+  if (!isAcademicSemesterExsts) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "this academic semester is not found !"
+    );
+  }
 
-const createSemesterRegistrationInToDB=async(payload: TSemesterRegistration)=>{
+  //check is already register or not
+  const isSemesterregistrationExists = await SemesterRegistration.findOne({
+    academicSemester,
+  });
 
-    const academicSemester=payload?.academicSemester
+  if (isSemesterregistrationExists) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      "this academic semester is already register!"
+    );
+  }
 
-    const isSemesterregistrationExists= await SemesterRegistration.findOne({academicSemester})
+  const result = await SemesterRegistration.create(payload);
+  return result;
+};
+const findAllSemesterRegistrationFromDB = async () => {
+  const result = await SemesterRegistration.find();
+  return result;
+};
 
-    if(academicSemester){
-        throw new AppError(httpStatus.CONFLICT,'this academic semester is already register!')
-    }
+const findSingleSemesterRegistrationFromDB = async (id: string) => {
+  const result = await SemesterRegistration.findById(id);
+  return result;
+};
+const updateSemesterRegistrationInToDB = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>
+) => {
+  const result = await SemesterRegistration.findByIdAndUpdate();
 
-    
-    //check if the semester exist
-    const isAcademicSemesterExsts =await AcademicSemesterModel.findById(academicSemester)
-    if(!isAcademicSemesterExsts){
-        throw new AppError(httpStatus.NOT_FOUND,'this academic semester is not found !')
-    }
-
-  const result= await SemesterRegistration.create()
-  return result
-}
-const findAllSemesterRegistrationFromDB=async()=>{
-
-  const result= await SemesterRegistration.find()
-  return result
-}
-
-const findSingleSemesterRegistrationFromDB=async(id : string)=>{
-
-  const result= await SemesterRegistration.findById(id)
-  return result
-}
-const updateSemesterRegistrationInToDB=async(id : string,payload :Partial<TSemesterRegistration>)=>{
-
-  const result= await SemesterRegistration.findByIdAndUpdate()
-
-  return result
-}
-
+  return result;
+};
 
 export const SemesterRegistrationServices = {
   createSemesterRegistrationInToDB,
   findAllSemesterRegistrationFromDB,
   findSingleSemesterRegistrationFromDB,
   updateSemesterRegistrationInToDB,
-  
 };
