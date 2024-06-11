@@ -178,7 +178,22 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
+
+//get add offered course
+const getOfferedCourseFromDB=async()=>{
+    const result =await OfferedCourse.find()
+    
+    return result
+}
+const getOfferedSingleCourseFromDB=async(id :string)=>{
+    const result =await OfferedCourse.findById(id)
+    
+    return result
+}
+
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
+  getOfferedCourseFromDB,
+  getOfferedSingleCourseFromDB
 };
