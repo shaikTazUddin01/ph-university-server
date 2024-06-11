@@ -21,3 +21,4 @@ export type TSchedule = {
   startTime: string;
   endTime: string;
 };
+
