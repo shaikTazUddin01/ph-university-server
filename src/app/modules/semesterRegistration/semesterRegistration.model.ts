@@ -2,7 +2,6 @@ import { Schema, model, Types } from "mongoose";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import { SemesterRegistrationStatus } from "./semesterRegistration.constant";
 
-
 const SemesterRegistrationSchema = new Schema<TSemesterRegistration>(
   {
     academicSemester: {
@@ -14,7 +13,7 @@ const SemesterRegistrationSchema = new Schema<TSemesterRegistration>(
     status: {
       type: String,
       enum: SemesterRegistrationStatus,
-      default: "UPCAMING",
+      default: "UPCOMING",
     },
     startDate: {
       type: Date,
@@ -26,12 +25,12 @@ const SemesterRegistrationSchema = new Schema<TSemesterRegistration>(
     },
     minCredit: {
       type: Number,
-      default:3
+      default: 3,
     },
-    maxCredit:{
-        type:Number,
-        default:15
-    }
+    maxCredit: {
+      type: Number,
+      default: 15,
+    },
   },
   { timestamps: true }
 );
