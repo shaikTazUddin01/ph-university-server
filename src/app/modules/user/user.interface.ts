@@ -8,6 +8,7 @@ export interface Tuser {
   role: "student" | "admin" | "faculty";
   status: "in-progress" | "blocked";
   isDeleted: boolean;
+  passwordChangeAt?:Date
 }
 
 export interface UserModel extends Model<Tuser> {
