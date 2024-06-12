@@ -40,14 +40,21 @@ const logInUser = async (payload: TLoginUser) => {
   }
 
   //create token and sent to the client
-  const jwtPayload = {
-    uesrId: user,
-    role: user?.role,
-  };
-  const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
+  // console.log( "user Id",user?.id);
+  // const jwtPayload = {
+  //   userId: user?.id,
+  //   Id: user?.id,
+  //   role: user?.role,
+  // };
+  const jwtpayload ={
+    userId:user?.id,
+    role:user?.role
+  }
+  // console.log(jwtpayload);
+  const accessToken = jwt.sign(jwtpayload, config.jwt_access_secret as string, {
     expiresIn: "10d",
   });
-
+ 
   return {
     accessToken,
     needsPasswordChange: user?.newPasswordChange,

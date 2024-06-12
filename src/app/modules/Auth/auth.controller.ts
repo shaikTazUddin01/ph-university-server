@@ -6,7 +6,7 @@ import { AuthServices } from "./auth.service";
 
 const loginUser=catchAsync(async(req,res)=>{
 const result = await AuthServices.logInUser(req.body)
-
+// console.log(result);
 sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
