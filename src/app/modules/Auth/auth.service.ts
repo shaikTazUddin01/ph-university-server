@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { string } from "zod";
+import { createToken } from "./auth.utils";
 
 const logInUser = async (payload: TLoginUser) => {
   //checking if hte user is exist
@@ -53,12 +54,20 @@ const logInUser = async (payload: TLoginUser) => {
     role: user?.role,
   };
   // console.log(jwtpayload);
-  const accessToken = jwt.sign(jwtpayload, config.jwt_access_secret as string, {
-    expiresIn: "10d",
-  });
+  const accessToken = createToken(
+    jwtpayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string
+  );
+  const refreshToken = createToken(
+    jwtpayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string
+  );
 
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: user?.newPasswordChange,
   };
 };
@@ -103,7 +112,7 @@ const changePassword = async (
     Number(config.bcrypt_salt_rounds)
   );
 
-await User.findOneAndUpdate(
+  await User.findOneAndUpdate(
     {
       id: userData.userId,
       role: userData.role,
@@ -111,11 +120,11 @@ await User.findOneAndUpdate(
 
     {
       password: newHashedPassword,
-      newPasswordChange:false,
-      passwordChangeAt:new Date()
+      newPasswordChange: false,
+      passwordChangeAt: new Date(),
     }
   );
-  return null
+  return null;
 };
 
 export const AuthServices = {
