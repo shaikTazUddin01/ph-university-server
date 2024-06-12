@@ -7,20 +7,19 @@ const findAllAdminFromDB = async () => {
 };
 
 const findSingleAdminFromDB = async (id: string) => {
-  const result = await Admin.findById( id );
+  const result = await Admin.findById(id);
   return result;
 };
 
-const updateAdminInToDB=async(id : string,payload :Partial<TAdmin>)=>{
-
-  const result= await Admin.findByIdAndUpdate(id,payload,{
-    new:true
-  })
-  return result
-}
+const updateAdminInToDB = async (id: string, payload: Partial<TAdmin>) => {
+  const result = await Admin.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
 const deleteAdminIntoDB = async (id: string) => {
   const result = await Admin.findByIdAndUpdate(
-    id ,
+    id,
     { isDeleted: true },
     {
       new: true,
@@ -35,5 +34,5 @@ export const AdminServices = {
   findAllAdminFromDB,
   findSingleAdminFromDB,
   deleteAdminIntoDB,
-  updateAdminInToDB
+  updateAdminInToDB,
 };
