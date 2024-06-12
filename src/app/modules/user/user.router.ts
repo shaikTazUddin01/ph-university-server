@@ -4,12 +4,14 @@ import { userController } from "./user.controller";
 
 import validateRequest from "../../middlewares/validateRequest";
 import { studentValidations } from "../student/student.zod.validation";
+import auth from "../../middlewares/Auth";
+import { USER_ROLE } from "./user.constant";
 
 const router = express.Router();
 
 router.post(
   "/create-student",
-  validateRequest(studentValidations.createStudentZodValidation),
+  validateRequest(studentValidations.createStudentZodValidation),auth(USER_ROLE.admin ),
   userController.createStudent
 );
 router.post(
@@ -17,7 +19,7 @@ router.post(
   userController.createFaculty
 );
 router.post(
-  "/create-admin",
+  "/create-admin",auth(USER_ROLE.admin),
   userController.createAdmin
 );
 
