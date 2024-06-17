@@ -14,6 +14,10 @@ const userSchema = new Schema<Tuser, UserModel>(
       select: 0,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
     newPasswordChange: {
       type: Boolean,
       default: true,
@@ -47,7 +51,7 @@ const userSchema = new Schema<Tuser, UserModel>(
 userSchema.pre("save", async function (next) {
   // console.log(this, 'pre student data');
   const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.salt_round));
+  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
   next();
 });
 

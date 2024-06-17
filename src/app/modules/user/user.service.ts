@@ -27,6 +27,8 @@ const createStudentInToDB = async (password: string, payload: Student) => {
   //set student role
 
   userData.role = "student";
+  //set user email
+  userData.email = payload?.email;
 
   //find academic semester info
   const admissionSemester = await AcademicSemesterModel.findById(
@@ -82,30 +84,32 @@ const createFacultyInToDB = async (password: string, payload: TFaculty) => {
 
   userData.password = password || config.default_pass;
   userData.role = "faculty";
-
+  //set user email
+  userData.email = payload?.email;
   // const session = await mongoose.startSession();
 
   // try {
   //   session.startTransaction();
-    const newId = await lastFacultyId();
+  const newId = await lastFacultyId();
 
-    console.log('ID',newId);
-    payload.id = newId;
-    userData.id = newId;
+  console.log("ID", newId);
+  payload.id = newId;
+  userData.id = newId;
 
-  
-    const newUser = await User.create(userData
-      // , { session }
-    );
-console.log(newUser);
-    const newFaculty = await Faculty.create(payload
-      // , { session }
-    );
+  const newUser = await User.create(
+    userData
+    // , { session }
+  );
+  console.log(newUser);
+  const newFaculty = await Faculty.create(
+    payload
+    // , { session }
+  );
 
-    // await session.abortTransaction();
-    // await session.endSession();
+  // await session.abortTransaction();
+  // await session.endSession();
 
-    return newFaculty;
+  return newFaculty;
   // } catch (error) {
   //   console.log(error);
   //   await session.abortTransaction();
@@ -118,24 +122,23 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
 
   userData.password = password || config.default_pass;
   userData.role = "admin";
+  //set user email
+  userData.email = payload?.email;
+  const newId = await lastAdminId();
 
-    const newId = await lastAdminId();
+  // console.log('ID',newId);
+  payload.id = newId;
+  userData.id = newId;
 
-    // console.log('ID',newId);
-    payload.id = newId;
-    userData.id = newId;
+  const newUser = await User.create(userData);
 
-  
-    const newUser = await User.create(userData);
+  const newAdmin = await Admin.create(payload);
 
-    const newAdmin = await Admin.create(payload);
-
-    return newAdmin;
-
+  return newAdmin;
 };
 
 export const UserService = {
   createStudentInToDB,
   createFacultyInToDB,
-  createAdminInToDB
+  createAdminInToDB,
 };
