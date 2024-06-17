@@ -15,7 +15,8 @@ import { facultyServices } from "./faculty.service";
 // });
 
 const findAllFaculty=catchAsync(async(req,res)=>{
-  console.log("test",req.user);
+  // console.log("test",req.user);
+  console.log(req.cookies);
   const result =await facultyServices.findAllFacultyFromDB()
   sendResponse(res,{
     statusCode:httpStatus.OK,

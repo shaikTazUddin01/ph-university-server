@@ -5,11 +5,13 @@ import cors from "cors";
 import globalErrorHandler from "./middlewares/globalErrorhandler";
 import notFound from "./middlewares/notFound";
 import router from "./routes";
+import cookieParser from "cookie-parser";
 // import { promise } from "zod";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin:['http://localhost:5173']}));
+app.use(cookieParser())
 
 //application routes
 

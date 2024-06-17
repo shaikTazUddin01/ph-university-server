@@ -19,7 +19,7 @@ router.post(
   userController.createFaculty
 );
 router.post(
-  "/create-admin",auth(USER_ROLE.admin),
+  "/create-admin",
   userController.createAdmin
 );
 
