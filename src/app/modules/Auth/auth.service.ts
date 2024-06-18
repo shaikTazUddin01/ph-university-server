@@ -5,8 +5,9 @@ import { TLoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
-import { string } from "zod";
+// import { string } from "zod";
 import { createToken } from "./auth.utils";
+import { sendEmail } from "../../utils/sendEmail";
 
 const logInUser = async (payload: TLoginUser) => {
   //checking if hte user is exist
@@ -214,6 +215,7 @@ const forgetPassword = async (userId: string) => {
 
 
 const resetUILink=`http://localhost:3000?id=${user?.id}&token=${resetToken}`
+sendEmail()
 
 console.log(resetUILink);
 };
