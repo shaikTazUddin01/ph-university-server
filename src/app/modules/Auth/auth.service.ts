@@ -182,7 +182,6 @@ const refreshToken = async (token: string) => {
 };
 
 const forgetPassword = async (userId: string) => {
-
   // checking if the user is exist
   const user = await User.isUserExistsByCustomId(userId);
 
@@ -210,14 +209,69 @@ const forgetPassword = async (userId: string) => {
   const resetToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-   '10m'
+    "10m"
   );
 
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user?.id}&token=${resetToken}`;
+  sendEmail(user?.email, resetUILink);
 
-const resetUILink=`http://localhost:3000?id=${user?.id}&token=${resetToken}`
-sendEmail()
+  // console.log(resetUILink);
+};
 
-console.log(resetUILink);
+const resetPassword = async (
+  payload: { id: string; newPassword: string },
+  token: string
+) => {
+  const user = await User.isUserExistsByCustomId(payload?.id);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
+  }
+  // checking if the user is already deleted
+  const isDeleted = user?.isDeleted;
+
+  if (isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is deleted !");
+  }
+
+  // checking if the user is blocked
+  const userStatus = user?.status;
+
+  if (userStatus === "blocked") {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked ! !");
+  }
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+
+  if (decoded?.userId !== payload?.id) {
+    throw new AppError(httpStatus.FORBIDDEN, "you are forbidden");
+  }
+
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
+  const result = await User.findOneAndUpdate(
+    {
+      id: payload.id,
+      role: user.role,
+    },
+
+    {
+      password: newHashedPassword,
+      newPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
+    {
+      new: true,
+    }
+  );
+
+  console.log(newHashedPassword);
+
+  return result;
 };
 
 export const AuthServices = {
@@ -225,4 +279,5 @@ export const AuthServices = {
   changePassword,
   refreshToken,
   forgetPassword,
+  resetPassword,
 };

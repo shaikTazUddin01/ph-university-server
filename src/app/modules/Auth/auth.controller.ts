@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/cathcAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
-import { ParseStatus } from "zod";
+// import { ParseStatus } from "zod";
 import config from "../../config";
 
 
@@ -66,10 +66,23 @@ const forgetPassword=catchAsync(async (req, res) => {
     data: result,
   });
 });
+const resetPassword=catchAsync(async (req, res) => {
+const token=req.headers.authorization
+// console.log(token);
+  const result = await AuthServices.resetPassword(req.body,token as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'password reset successfully!',
+    data: result,
+  });
+});
 
 export const AuthControllers={
     loginUser,
     changePassword,
     refreshToken,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 }
