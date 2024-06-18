@@ -17,6 +17,7 @@ import Admin from "../Admin/admin.model";
 // import { deCoded } from "../Auth/auth.utils";
 // import jwt,{ JwtPayload } from "jsonwebtoken";
 import { deCodedToken } from "../Auth/auth.utils";
+import { JwtPayload } from "jsonwebtoken";
 
 //create student
 const createStudentInToDB = async (password: string, payload: Student) => {
@@ -142,31 +143,40 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
   return newAdmin;
 };
 
-const getMe = async (token: string) => {
-  console.log(token);
-  const decoded = deCodedToken(token, config.jwt_access_secret as string);
-
+const getMe = async (token: JwtPayload) => {
+  
   let result = null;
-  const { userId, role } = decoded;
+  const { userId, role } = token;
 
   if (role === "student") {
     
-    result = await StudentModel.findOne({id:userId}).populate('admissionSemester');
+    result = await StudentModel.findOne({id:userId}).populate('user');
   }
   if (role ==='admin') {
-    result = await Admin.findOne({id:userId})
+    result = await Admin.findOne({id:userId}).populate('user');
     
   }
    if(role === 'faculty'){
-    result = await Faculty.findOne({id:userId})
+    result = await Faculty.findOne({id:userId}).populate('user');
   }
 
-  // console.log(result);
   return result
 };
+
+const changeStatus=async(id :string ,payload:{
+  status:string
+})=>{
+// console.log(id);
+  const result = await User.findByIdAndUpdate(id,payload,{
+    new:true
+})
+
+return result
+}
 export const UserService = {
   createStudentInToDB,
   createFacultyInToDB,
   createAdminInToDB,
   getMe,
+  changeStatus
 };

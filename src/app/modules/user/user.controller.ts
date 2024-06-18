@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/cathcAsync";
 import { AppError } from "../../errors/AppErrors";
+import { JwtPayload } from "jsonwebtoken";
 
 
 const createStudent = catchAsync(async (req, res) => {
@@ -43,15 +44,24 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 const getMe = catchAsync(async (req, res) => {
-  const token = req.headers.authorization
-  if (!token) {
-    throw new AppError(httpStatus.FORBIDDEN,"you are not authorized person")
-  }
-  const result= await UserService.getMe(token)
+
+  const result= await UserService.getMe(req.user as JwtPayload)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "data retrieve successfully",
+    message: "userr is retrieve successfully",
+    data: result,
+  });
+});
+
+const changeStatus = catchAsync(async (req, res) => {
+const id=req.params.id
+// console.log(id);
+  const result= await UserService.changeStatus(id,req.body)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "userr is retrieve successfully",
     data: result,
   });
 });
@@ -59,5 +69,6 @@ export const userController = {
   createStudent,
   createFaculty,
   createAdmin,
+  changeStatus,
   getMe
 };
