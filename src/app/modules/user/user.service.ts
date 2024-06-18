@@ -14,6 +14,9 @@ import { TFaculty } from "../Faculty/faculty.interface";
 import Faculty from "../Faculty/faculty.model";
 import { TAdmin } from "../Admin/admin.interface";
 import Admin from "../Admin/admin.model";
+// import { deCoded } from "../Auth/auth.utils";
+// import jwt,{ JwtPayload } from "jsonwebtoken";
+import { deCodedToken } from "../Auth/auth.utils";
 
 //create student
 const createStudentInToDB = async (password: string, payload: Student) => {
@@ -131,6 +134,7 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
   payload.id = newId;
   userData.id = newId;
 
+  // eslint-disable-next-line no-unused-vars
   const newUser = await User.create(userData);
 
   const newAdmin = await Admin.create(payload);
@@ -138,8 +142,31 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
   return newAdmin;
 };
 
+const getMe = async (token: string) => {
+  console.log(token);
+  const decoded = deCodedToken(token, config.jwt_access_secret as string);
+
+  let result = null;
+  const { userId, role } = decoded;
+
+  if (role === "student") {
+    
+    result = await StudentModel.findOne({id:userId}).populate('admissionSemester');
+  }
+  if (role ==='admin') {
+    result = await Admin.findOne({id:userId})
+    
+  }
+   if(role === 'faculty'){
+    result = await Faculty.findOne({id:userId})
+  }
+
+  // console.log(result);
+  return result
+};
 export const UserService = {
   createStudentInToDB,
   createFacultyInToDB,
   createAdminInToDB,
+  getMe,
 };

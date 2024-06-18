@@ -3,11 +3,12 @@ import { UserService } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/cathcAsync";
+import { AppError } from "../../errors/AppErrors";
 
 
 const createStudent = catchAsync(async (req, res) => {
   const { password, studentInfo } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   const result = await UserService.createStudentInToDB(password, studentInfo);
 
   sendResponse(res, {
@@ -41,8 +42,22 @@ const createAdmin = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getMe = catchAsync(async (req, res) => {
+  const token = req.headers.authorization
+  if (!token) {
+    throw new AppError(httpStatus.FORBIDDEN,"you are not authorized person")
+  }
+  const result= await UserService.getMe(token)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "data retrieve successfully",
+    data: result,
+  });
+});
 export const userController = {
   createStudent,
   createFaculty,
-  createAdmin
+  createAdmin,
+  getMe
 };

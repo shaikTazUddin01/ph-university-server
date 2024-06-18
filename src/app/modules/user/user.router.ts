@@ -11,7 +11,8 @@ const router = express.Router();
 
 router.post(
   "/create-student",
-  validateRequest(studentValidations.createStudentZodValidation),auth(USER_ROLE.admin ),
+  validateRequest(studentValidations.createStudentZodValidation),
+  // auth(USER_ROLE.admin ),
   userController.createStudent
 );
 router.post(
@@ -23,4 +24,8 @@ router.post(
   userController.createAdmin
 );
 
+router.get(
+  "/me",auth('student','admin','faculty' ),
+  userController.getMe
+);
 export const userRouters = router;
