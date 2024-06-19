@@ -6,6 +6,7 @@ import sendResponse from '../../utils/sendResponse';
 
 
 const createOfferedCourse = catchAsync(async (req: Request, res: Response) => {
+  // console.log(req.user);
   const result = await OfferedCourseServices.createOfferedCourseIntoDB(
     req.body,
   );

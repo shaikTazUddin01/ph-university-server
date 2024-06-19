@@ -144,12 +144,11 @@ const updateOfferedCourseIntoDB = async (
     semesterRegistration
   );
   if (semesterRegistrationStatus?.status !== "UPCOMING") {
- 
-  throw new AppError(
-    httpStatus.BAD_REQUEST,
-    `you can not update this offerd course`
-  );
-}
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `you can not update this offerd course`
+    );
+  }
   // get the schedules of the faculties
   const assignedSchedules = await OfferedCourse.find({
     semesterRegistration,
@@ -178,22 +177,27 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
-
 //get add offered course
-const getOfferedCourseFromDB=async()=>{
-    const result =await OfferedCourse.find()
-    
-    return result
-}
-const getOfferedSingleCourseFromDB=async(id :string)=>{
-    const result =await OfferedCourse.findById(id)
-    
-    return result
-}
+const getOfferedCourseFromDB = async () => {
+  const result = await OfferedCourse.find()
+    .populate("semesterRegistration")
+    .populate("academicSemester")
+    .populate("academicFaculty")
+    .populate("academicDepartment")
+    .populate("course")
+    .populate("faculty");
+
+  return result;
+};
+const getOfferedSingleCourseFromDB = async (id: string) => {
+  const result = await OfferedCourse.findById(id);
+
+  return result;
+};
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
   getOfferedCourseFromDB,
-  getOfferedSingleCourseFromDB
+  getOfferedSingleCourseFromDB,
 };
