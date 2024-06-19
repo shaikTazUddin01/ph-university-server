@@ -21,7 +21,8 @@ import { JwtPayload } from "jsonwebtoken";
 import { sendImageToCloudinary } from "../../utils/sendImageToClodinary";
 
 //create student
-const createStudentInToDB = async (password: string, payload: Student) => {
+const createStudentInToDB = async (password: string, payload: Student,filePath : string ) => {
+ 
   //create a user object
   const userData: Partial<Tuser> = {};
 
@@ -49,6 +50,11 @@ const createStudentInToDB = async (password: string, payload: Student) => {
       admissionSemester as TacademicSemester
     );
 
+    const fileName=`${payload?.name?.firstName} ${payload?.name?.middleName}`
+    //send image to cloudinary
+    sendImageToCloudinary(filePath,fileName);
+
+
     //create a user(transaction - 1 )
     const newUser = await User.create([userData], { session });
 
@@ -61,8 +67,7 @@ const createStudentInToDB = async (password: string, payload: Student) => {
     payload.user = newUser[0]._id; //reference_id
 
     //create a student (transaction- 2)
-    //send image to cloudinary
-    sendImageToCloudinary();
+   
     const newStudent = await StudentModel.create([payload], { session });
 
     // console.log("new student", newStudent);
