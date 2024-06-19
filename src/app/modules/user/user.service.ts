@@ -16,8 +16,9 @@ import { TAdmin } from "../Admin/admin.interface";
 import Admin from "../Admin/admin.model";
 // import { deCoded } from "../Auth/auth.utils";
 // import jwt,{ JwtPayload } from "jsonwebtoken";
-import { deCodedToken } from "../Auth/auth.utils";
+// import { deCodedToken } from "../Auth/auth.utils";
 import { JwtPayload } from "jsonwebtoken";
+import { sendImageToCloudinary } from "../../utils/sendImageToClodinary";
 
 //create student
 const createStudentInToDB = async (password: string, payload: Student) => {
@@ -60,7 +61,8 @@ const createStudentInToDB = async (password: string, payload: Student) => {
     payload.user = newUser[0]._id; //reference_id
 
     //create a student (transaction- 2)
-
+    //send image to cloudinary
+    sendImageToCloudinary();
     const newStudent = await StudentModel.create([payload], { session });
 
     // console.log("new student", newStudent);
@@ -135,7 +137,7 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
   payload.id = newId;
   userData.id = newId;
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const newUser = await User.create(userData);
 
   const newAdmin = await Admin.create(payload);
@@ -144,39 +146,39 @@ const createAdminInToDB = async (password: string, payload: TAdmin) => {
 };
 
 const getMe = async (token: JwtPayload) => {
-  
   let result = null;
   const { userId, role } = token;
 
   if (role === "student") {
-    
-    result = await StudentModel.findOne({id:userId}).populate('user');
+    result = await StudentModel.findOne({ id: userId }).populate("user");
   }
-  if (role ==='admin') {
-    result = await Admin.findOne({id:userId}).populate('user');
-    
+  if (role === "admin") {
+    result = await Admin.findOne({ id: userId }).populate("user");
   }
-   if(role === 'faculty'){
-    result = await Faculty.findOne({id:userId}).populate('user');
+  if (role === "faculty") {
+    result = await Faculty.findOne({ id: userId }).populate("user");
   }
 
-  return result
+  return result;
 };
 
-const changeStatus=async(id :string ,payload:{
-  status:string
-})=>{
-// console.log(id);
-  const result = await User.findByIdAndUpdate(id,payload,{
-    new:true
-})
+const changeStatus = async (
+  id: string,
+  payload: {
+    status: string;
+  }
+) => {
+  // console.log(id);
+  const result = await User.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
 
-return result
-}
+  return result;
+};
 export const UserService = {
   createStudentInToDB,
   createFacultyInToDB,
   createAdminInToDB,
   getMe,
-  changeStatus
+  changeStatus,
 };
