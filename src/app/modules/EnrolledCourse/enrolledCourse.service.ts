@@ -1,11 +1,13 @@
-
-import { TEnrolledCourse } from './enrolledCourse.interface';
-import EnrolledCourse from './enrolledCourse.model';
-
+import httpStatus from "http-status";
+import { AppError } from "../../errors/AppErrors";
+import { OfferedCourse } from "../offeredCourse/OfferedCourse.model";
+import { TEnrolledCourse } from "./enrolledCourse.interface";
+import EnrolledCourse from "./enrolledCourse.model";
+import StudentModel from "../student/student.model";
 
 const createEnrolledCourseIntoDB = async (
-
-  payload: TEnrolledCourse,
+  userId: string,
+  payload: TEnrolledCourse
 ) => {
   /**
    * Step1: Check if the offered cousres is exists
@@ -13,10 +15,33 @@ const createEnrolledCourseIntoDB = async (
    * Step3: Check if the max credits exceed
    * Step4: Create an enrolled course
    */
-    // const result = await EnrolledCourse.create(payload)
+  const { offeredCourse } = payload;
+  const isOfferedCourseExists = await OfferedCourse.findById(offeredCourse);
+  if (!isOfferedCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "offered course is not found");
+  }
 
-    return null
+  if (isOfferedCourseExists.maxCapacity <= 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Room is full");
+  }
 
+  const student = await StudentModel.findOne({ id: userId }).select("_id");
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, "student is not found");
+  }
+  const isStudentAlreadyEnroll = await EnrolledCourse.findOne({
+    semesterRegistration: isOfferedCourseExists?.semesterRegistration,
+    offeredCourse,
+    student: student._id,
+  });
+
+  if (isStudentAlreadyEnroll) {
+    throw new AppError(httpStatus.NOT_FOUND, "This course is already enrolled");
+  }
+
+  // const result = await EnrolledCourse.create(payload)
+
+  return null;
 };
 
 //   facultyId: string,
@@ -102,5 +127,5 @@ const createEnrolledCourseIntoDB = async (
 
 export const EnrolledCourseServices = {
   createEnrolledCourseIntoDB,
-//   updateEnrolledCourseMarksIntoDB,
+  //   updateEnrolledCourseMarksIntoDB,
 };
