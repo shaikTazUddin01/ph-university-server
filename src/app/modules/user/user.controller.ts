@@ -13,7 +13,7 @@ const createStudent = catchAsync(async (req, res) => {
 // console.log(req.body);
   const { password, studentInfo } = req.body;
   // console.log(req.body);
-  const result = await UserService.createStudentInToDB(password, studentInfo,req?.file?.path);
+  const result = await UserService.createStudentInToDB(password, studentInfo,req?.file?.path as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
