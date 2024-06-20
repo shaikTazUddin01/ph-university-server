@@ -5,6 +5,7 @@ import { TEnrolledCourse } from "./enrolledCourse.interface";
 import EnrolledCourse from "./enrolledCourse.model";
 import StudentModel from "../student/student.model";
 import mongoose from "mongoose";
+import SemesterRegistration from "../semesterRegistration/semesterRegistration.model";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -18,7 +19,7 @@ const createEnrolledCourseIntoDB = async (
    */
   const { offeredCourse } = payload;
   const isOfferedCourseExists = await OfferedCourse.findById(offeredCourse);
- 
+
   if (!isOfferedCourseExists) {
     throw new AppError(httpStatus.NOT_FOUND, "offered course is not found");
   }
@@ -41,48 +42,91 @@ const createEnrolledCourseIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, "This course is already enrolled");
   }
 
-  const session = await mongoose.startSession();
+  const semesterRegistration = await SemesterRegistration.findById(
+    isOfferedCourseExists?.semesterRegistration
+  ).select("maxCredit");
 
-  try {
-    session.startTransaction();
-    const result = await EnrolledCourse.create(
-      [{
-        semesterRegistration: isOfferedCourseExists?.semesterRegistration,
-        academicSemester: isOfferedCourseExists?.academicSemester,
-        academicFaculty: isOfferedCourseExists?.academicFaculty,
-        academicDepartment: isOfferedCourseExists?.academicDepartment,
-        offeredCourse: offeredCourse,
-        course: isOfferedCourseExists.course,
+  console.log(semesterRegistration);
+
+  const enrolledCourse = await EnrolledCourse.aggregate([
+    {
+      $match: {
         student: student._id,
-        faculty: isOfferedCourseExists.faculty,
-        isEnrolled:true
-      }],
-      { session }
-    );
-
-    if (!result) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        "Failed to Enroll in this course"
-      );
-    }
-
-    const maxCapacity = (isOfferedCourseExists.maxCapacity - 1);
-
-    await OfferedCourse.findOneAndUpdate({_id:offeredCourse}, {
-      maxCapacity: maxCapacity,
+        semesterRegistration: isOfferedCourseExists.semesterRegistration,
+      },
     },
-    { session });
+    {
+      $lookup: {
+        from: "courses",
+        localField: "course",
+        foreignField: "_id",
+        as: "enrolledCourseData",
+      },
+    },
+    {
+      $unwind: "$enrolledCourseData",
+    },
+    {
+      $group: {
+        _id: null,
+        totalenrolledCredits: { $sum: "$enrolledCourseData.credits" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ]);
 
-    await session.commitTransaction();
-    await session.endSession();
+  console.log(enrolledCourse);
+  const totalCredits= enrolledCourse?.length>0 ? enrolledCourse[0]?.totalenrolledCredits:0
 
-    return result;
-  } catch (error) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw new Error(error as string);
-  }
+  console.log(totalCredits);
+  // const session = await mongoose.startSession();
+
+  // try {
+  //   session.startTransaction();
+  //   const result = await EnrolledCourse.create(
+  //     [{
+  //       semesterRegistration: isOfferedCourseExists?.semesterRegistration,
+  //       academicSemester: isOfferedCourseExists?.academicSemester,
+  //       academicFaculty: isOfferedCourseExists?.academicFaculty,
+  //       academicDepartment: isOfferedCourseExists?.academicDepartment,
+  //       offeredCourse: offeredCourse,
+  //       course: isOfferedCourseExists.course,
+  //       student: student._id,
+  //       faculty: isOfferedCourseExists.faculty,
+  //       isEnrolled:true
+  //     }],
+  //     { session }
+  //   );
+
+  //   if (!result) {
+  //     throw new AppError(
+  //       httpStatus.BAD_REQUEST,
+  //       "Failed to Enroll in this course"
+  //     );
+  //   }
+
+  //   const maxCapacity = (isOfferedCourseExists.maxCapacity - 1);
+
+  //   await OfferedCourse.findOneAndUpdate({_id:offeredCourse}, {
+  //     maxCapacity: maxCapacity,
+  //   },
+  //   { session });
+
+  //   await session.commitTransaction();
+  //   await session.endSession();
+
+  //   return result;
+  // } catch (error) {
+  //   await session.abortTransaction();
+  //   await session.endSession();
+  //   throw new Error(error as string);
+  // }
+
+  return null;
 };
 
 //   facultyId: string,
