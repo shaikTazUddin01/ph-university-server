@@ -6,6 +6,8 @@ import EnrolledCourse from "./enrolledCourse.model";
 import StudentModel from "../student/student.model";
 import mongoose from "mongoose";
 import SemesterRegistration from "../semesterRegistration/semesterRegistration.model";
+import { Courses } from "../courses/course.model";
+
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -41,12 +43,12 @@ const createEnrolledCourseIntoDB = async (
   if (isStudentAlreadyEnroll) {
     throw new AppError(httpStatus.NOT_FOUND, "This course is already enrolled");
   }
-
+//check total credits exceeds maxCredit
   const semesterRegistration = await SemesterRegistration.findById(
     isOfferedCourseExists?.semesterRegistration
   ).select("maxCredit");
 
-  console.log(semesterRegistration);
+  // console.log(semesterRegistration);
 
   const enrolledCourse = await EnrolledCourse.aggregate([
     {
@@ -79,54 +81,62 @@ const createEnrolledCourseIntoDB = async (
     },
   ]);
 
-  console.log(enrolledCourse);
+
+  const course= await Courses.findById(isOfferedCourseExists?.course).select('credits')
+  // console.log(course);
+
+  // console.log(enrolledCourse);
   const totalCredits= enrolledCourse?.length>0 ? enrolledCourse[0]?.totalenrolledCredits:0
 
-  console.log(totalCredits);
-  // const session = await mongoose.startSession();
+  // console.log(totalCredits);
 
-  // try {
-  //   session.startTransaction();
-  //   const result = await EnrolledCourse.create(
-  //     [{
-  //       semesterRegistration: isOfferedCourseExists?.semesterRegistration,
-  //       academicSemester: isOfferedCourseExists?.academicSemester,
-  //       academicFaculty: isOfferedCourseExists?.academicFaculty,
-  //       academicDepartment: isOfferedCourseExists?.academicDepartment,
-  //       offeredCourse: offeredCourse,
-  //       course: isOfferedCourseExists.course,
-  //       student: student._id,
-  //       faculty: isOfferedCourseExists.faculty,
-  //       isEnrolled:true
-  //     }],
-  //     { session }
-  //   );
+  if (semesterRegistration && course && totalCredits + course?.credits > semesterRegistration?.maxCredit) {
+    throw new AppError(httpStatus.FORBIDDEN, "This course is Exceeded the limit");
+  }
+  const session = await mongoose.startSession();
 
-  //   if (!result) {
-  //     throw new AppError(
-  //       httpStatus.BAD_REQUEST,
-  //       "Failed to Enroll in this course"
-  //     );
-  //   }
+  try {
+    session.startTransaction();
+    const result = await EnrolledCourse.create(
+      [{
+        semesterRegistration: isOfferedCourseExists?.semesterRegistration,
+        academicSemester: isOfferedCourseExists?.academicSemester,
+        academicFaculty: isOfferedCourseExists?.academicFaculty,
+        academicDepartment: isOfferedCourseExists?.academicDepartment,
+        offeredCourse: offeredCourse,
+        course: isOfferedCourseExists.course,
+        student: student._id,
+        faculty: isOfferedCourseExists.faculty,
+        isEnrolled:true
+      }],
+      { session }
+    );
 
-  //   const maxCapacity = (isOfferedCourseExists.maxCapacity - 1);
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Failed to Enroll in this course"
+      );
+    }
 
-  //   await OfferedCourse.findOneAndUpdate({_id:offeredCourse}, {
-  //     maxCapacity: maxCapacity,
-  //   },
-  //   { session });
+    const maxCapacity = (isOfferedCourseExists.maxCapacity - 1);
 
-  //   await session.commitTransaction();
-  //   await session.endSession();
+    await OfferedCourse.findOneAndUpdate({_id:offeredCourse}, {
+      maxCapacity: maxCapacity,
+    },
+    { session });
 
-  //   return result;
-  // } catch (error) {
-  //   await session.abortTransaction();
-  //   await session.endSession();
-  //   throw new Error(error as string);
-  // }
+    await session.commitTransaction();
+    await session.endSession();
 
-  return null;
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error as string);
+  }
+
+  // return null;
 };
 
 //   facultyId: string,
