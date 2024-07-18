@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 // router.post("/create-faculty", facultyController.createFaculty);
-router.get("/",auth(USER_ROLE.admin,USER_ROLE.faculty), facultyController.findAllFaculty);
+router.get("/",auth(USER_ROLE.admin), facultyController.findAllFaculty);
 router.get("/:id", facultyController.findSingleFaculty);
 router.patch("/update/:id", facultyController.updateFaculty);
 router.delete("/delete/:id", facultyController.deleteFaculty);
