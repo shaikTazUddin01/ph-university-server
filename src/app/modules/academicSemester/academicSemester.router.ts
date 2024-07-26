@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post(
   "/",
+  // auth(USER_ROLE.admin),
   validateRequest(AcademicSemesterValidation.CreateAcademicSemesterValidation),
   academicSemesterController.createAcademicSemester
 );

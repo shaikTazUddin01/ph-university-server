@@ -6,6 +6,7 @@ const createAcademicSemesterInToDB = async (data: TacademicSemester) => {
   if (academicSemesterNameCodeMapper[data.name] !== data.code) {
     throw new Error("Invalid Semester code");
   }
+  // console.log("data-->>",data);
   const result = await AcademicSemesterModel.create(data);
   return result;
 };

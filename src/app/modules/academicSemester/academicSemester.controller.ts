@@ -4,9 +4,11 @@ import httpStatus from "http-status";
 import { academicSemesterService } from "./academicSemester.serviecs";
 
 const createAcademicSemester = catchAsync(async (req, res) => {
-  const academicSemester = req.body;
+  // const academicSemester = req.body;
+  console.log(req.body);
+ 
   const result = await academicSemesterService.createAcademicSemesterInToDB(
-    academicSemester
+    req.body
   );
 
   sendResponse(res, {
