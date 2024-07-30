@@ -162,9 +162,9 @@ const studentSchema = new Schema<Student>(
 
 //virtual
 
-// studentSchema.virtual('fullname').get(function () {
-//   return `${this.name.firstName} ${this?.name?.middleName} ${this.name.lastName}`;
-// });
+studentSchema.virtual('fullname').get(function () {
+  return `${this.name.firstName} ${this?.name?.middleName} ${this.name.lastName}`;
+});
 
 //pre middleware
 // studentSchema.pre('save', async function (next) {

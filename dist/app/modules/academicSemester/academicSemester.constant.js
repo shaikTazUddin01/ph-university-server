@@ -16,11 +16,11 @@ exports.AcademicSemesterMonths = [
     "December",
 ];
 exports.AcademicSemesterName = [
-    "Autumn", "Summar", "Fall"
+    "Autumn", "Summer", "Fall"
 ];
 exports.AcademicSemesterCode = ["01", "02", "03"];
 exports.academicSemesterNameCodeMapper = {
     Autumn: "01",
-    Summar: "02",
+    Summer: "02",
     Fall: "03",
 };

@@ -12,7 +12,7 @@ export type TMonth =
   | "November"
   | "December";
 
-export type TName = "Autumn" | "Summar" | "Fall";
+export type TName = "Autumn" | "Summer" | "Fall";
 export type TCode = "01" | "02" | "03";
 
 export type TacademicSemester = {

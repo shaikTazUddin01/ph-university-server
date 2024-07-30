@@ -67,7 +67,7 @@ const createStudentInToDB = async (
     //create a student (transaction- 2)
     const fileName = `${payload?.name?.firstName}${userData.id}`;
     //send image to cloudinary
-    const profileImg  = await sendImageToCloudinary(filePath, fileName);
+    const profileImg  = await sendImageToCloudinary(filePath, fileName)  ;
 // console.log(secure_url);
     const newStudent = await StudentModel.create([{...payload,profileImg}], {
       session,
