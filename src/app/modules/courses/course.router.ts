@@ -8,20 +8,35 @@ import { USER_ROLE } from "../user/user.constant";
 const router = express.Router();
 
 router.post(
-  "",auth(USER_ROLE.admin),
+  "",
+  auth(USER_ROLE.admin),
   validateRequest(courseValidation),
   courseController.createCourse
 );
-router.get("/",auth('student','faculty','admin'), courseController.findCourse);
-router.get("/:id",auth('student','faculty','admin'), courseController.findSingleCourse);
-router.delete("/:id",auth('admin'), courseController.DeleteCourse);
+router.get("/", courseController.findCourse);
+router.get(
+  "/:id",
+  auth("student", "faculty", "admin"),
+  courseController.findSingleCourse
+);
+router.delete("/:id", auth("admin"), courseController.DeleteCourse);
 router.patch(
   "/:id",
   validateRequest(updatecourseValidation),
   courseController.updateCourse
 );
-router.put("/:courseId/assign-faculties", courseController.assignFacultiesWithCourse);
+router.put(
+  "/:courseId/assign-faculties",
+  courseController.assignFacultiesWithCourse
+);
+router.get(
+  "/:courseId/assign-faculties",
+  courseController.findFacultyWithCourse
+);
 
-router.delete("/:courseId/removed-faculties", courseController.removedFacultiesWithCourse);
+router.delete(
+  "/:courseId/removed-faculties",
+  courseController.removedFacultiesWithCourse
+);
 
 export const course = router;

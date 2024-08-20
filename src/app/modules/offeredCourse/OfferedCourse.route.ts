@@ -12,11 +12,11 @@ router.post(
   validateRequest(OfferedCourseValidations.createOfferedCourseValidationSchema),
   OfferedCourseControllers.createOfferedCourse
 );
-router.post(
-  "/create-offered-course",
-  validateRequest(OfferedCourseValidations.createOfferedCourseValidationSchema),
-  OfferedCourseControllers.createOfferedCourse
-);
+// router.post(
+//   "/create-offered-course",
+//   validateRequest(OfferedCourseValidations.createOfferedCourseValidationSchema),
+//   OfferedCourseControllers.createOfferedCourse
+// );
 router.patch(
   "/update-offered-course/:id",
   validateRequest(OfferedCourseValidations.updateOfferedCourseValidationSchema),

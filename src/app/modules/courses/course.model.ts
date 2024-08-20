@@ -22,10 +22,10 @@ const courseSchema = new Schema<TCourses>(
     },
     prefix: {
       type: String,
-      required: true
+      // required: true 
     },
     code: {
-      type: Number,
+      type: String,
       required: true,
       trim: true,
     },
@@ -54,7 +54,7 @@ const FacultiesWithCourse =new Schema<TFacultyWithCourse>({
   },
   faculties:[{
     type:Schema.Types.ObjectId,
-    ref:'faculty'
+    ref:'Faculty'
   }]
 })
 

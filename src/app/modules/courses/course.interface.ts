@@ -8,8 +8,8 @@ export type TPerRequisteCourses={
 
 export type TCourses={
     title:string;
-    prefix:string;
-    code:number;
+    prefix?:string;
+    code:string;
     credits:number;
     isDeleted:boolean;
     perRequisteCourses:[TPerRequisteCourses]

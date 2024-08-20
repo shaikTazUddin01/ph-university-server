@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { TFaculty } from './faculty.interface';
 
 const facultySchema = new Schema<TFaculty>({

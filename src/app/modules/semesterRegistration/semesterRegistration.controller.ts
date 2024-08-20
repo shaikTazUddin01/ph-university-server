@@ -49,7 +49,7 @@ const findSingleSemesterRegistration = catchAsync(async (req, res) => {
 
 const updateSemesterRegistration = catchAsync(async (req, res) => {
   const {id}=req.params;
-
+console.log(req.params,req.body);
   const result = await SemesterRegistrationServices.updateSemesterRegistrationInToDB(id,req.body)
   
   sendResponse(res, {

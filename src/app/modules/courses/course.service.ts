@@ -3,9 +3,10 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { CouserSearchAbleField } from "./course.constant";
 import { TCourses, TFacultyWithCourse } from "./course.interface";
 import { Courses, FacultyCourse } from "./course.model";
-import { course } from "./course.router";
+
 import { AppError } from "../../errors/AppErrors";
 import httpStatus from "http-status";
+
 
 const createCourseInToDB = async (paylod: TCourses) => {
   const result = await Courses.create(paylod);
@@ -136,6 +137,17 @@ const assignFacultiesWithCourseIntoDB = async (
   return result;
   // console.log(id,payload);
 };
+
+// get faculty
+
+const getFacultiesWithCourseFromDB=async(id:string)=>{
+  // console.log(id);
+  const result = await FacultyCourse.findOne({ course: id }).populate('faculties')
+  return result;
+}
+
+
+
 const removedFacultiesWithCourseIntoDB = async (
   id: string,
   payload: Partial<TFacultyWithCourse>
@@ -162,5 +174,6 @@ export const CourseServices = {
   DeleteCourseFromDB,
   updateCourseInToDB,
   assignFacultiesWithCourseIntoDB,
+  getFacultiesWithCourseFromDB,
   removedFacultiesWithCourseIntoDB
 };
