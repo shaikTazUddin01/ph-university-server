@@ -17,16 +17,17 @@ const auth = (...reqquiredRoles: TUserRole[]) => {
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorized.!");
     }
-    let decoded;
-    try {
-       decoded = jwt.verify(
-        token,
-        config.jwt_access_secret as string
-      ) as JwtPayload;
-    } catch (error) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorizrd");
-    }
+    // console.log(token);
 
+ 
+  
+    // checking if the given token is valid
+    const decoded = jwt.verify(
+      token,
+      config.jwt_access_secret as string,
+    ) as JwtPayload;
+    
+// console.log(decoded);
     // const role = decoded.role;
     const { role, userId, iat } = decoded;
     // const id = decoded.userId;
@@ -63,7 +64,7 @@ const auth = (...reqquiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "you are not authorized");
     }
     // const {userId,role}=decoded;
-    req.user = decoded as JwtPayload;
+    req.user = decoded as JwtPayload & { role: string };
     // err
     // decoded undefined
     next();
